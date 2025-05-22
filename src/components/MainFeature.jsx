@@ -8,52 +8,52 @@ const dogData = [
   {
     id: 1,
     breed: "Golden Retriever",
-    imageUrl: "https://images.unsplash.com/photo-1508532566027-b2032cd8a715?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/retriever-golden/n02099601_3383.jpg",
   },
   {
     id: 2,
     breed: "Dalmatian",
-    imageUrl: "https://images.unsplash.com/photo-1583512603866-910c8542ba1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/dalmatian/cooper2.jpg",
   },
   {
     id: 3,
     breed: "Pug",
-    imageUrl: "https://images.unsplash.com/photo-1553698217-a3b24a8f0ae4?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/pug/n02110958_13439.jpg",
   },
   {
     id: 4,
     breed: "Siberian Husky",
-    imageUrl: "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/husky/n02110185_10047.jpg",
   },
   {
     id: 5,
     breed: "Beagle",
-    imageUrl: "https://images.unsplash.com/photo-1586671267731-da2cf3ceeb80?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/beagle/n02088364_16503.jpg",
   },
   {
     id: 6,
     breed: "German Shepherd",
-    imageUrl: "https://images.unsplash.com/photo-1588943211346-0908a1fb0b01?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/germanshepherd/n02106662_21068.jpg",
   },
   {
     id: 7,
     breed: "Labrador Retriever",
-    imageUrl: "https://images.unsplash.com/photo-1551730459-92db2a308d6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/labrador/n02099712_3503.jpg",
   },
   {
     id: 8,
     breed: "Poodle",
-    imageUrl: "https://images.unsplash.com/photo-1575425186775-b8de9a427e67?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/poodle-standard/n02113799_2292.jpg",
   },
   {
     id: 9,
     breed: "Border Collie",
-    imageUrl: "https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/collie-border/n02106166_1172.jpg",
   },
   {
     id: 10,
     breed: "Bulldog",
-    imageUrl: "https://images.unsplash.com/photo-1523567830207-96731740fa71?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
+    imageUrl: "https://images.dog.ceo/breeds/bulldog-english/jager-1.jpg",
   }
 ];
 

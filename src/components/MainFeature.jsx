@@ -443,6 +443,7 @@ const MainFeature = () => {
   const handleAnswerSelect = (answer) => {
     if (showFeedback || !quizActive || quizCompleted) return;
     
+    let answerTimeout;
     const currentQuestion = questions[currentQuestionIndex];
     const isCorrect = answer === currentQuestion.breed;
     
@@ -463,10 +464,10 @@ const MainFeature = () => {
     }
     
     // Move to next question after 30 seconds
-    clearTimeout(); // Clear any existing question timer
-    setTimeout(() => {
+    if (answerTimeout) clearTimeout(answerTimeout); // Clear any existing question timer
+    answerTimeout = setTimeout(() => {
       handleNextQuestion();
-    }, 30000);
+    }, 30000); // 30 seconds
   };  
   
   // Handle next question button click
@@ -487,12 +488,6 @@ const MainFeature = () => {
     }
   };
 
-    // Move to next question after 2 seconds
-    clearTimeout(); // Clear any existing question timer
-    setTimeout(() => {
-      handleNextQuestion();
-    }, 30000);
-  };
 
   // Format time as MM:SS
   const formatTime = (seconds) => {

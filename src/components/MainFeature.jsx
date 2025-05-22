@@ -465,7 +465,7 @@ const MainFeature = () => {
         setQuizCompleted(true);
         toast.info("Quiz completed!");
       }
-    }, 2000);
+    }, 30000);
   };  
 
   // Format time as MM:SS

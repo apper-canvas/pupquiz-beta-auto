@@ -781,19 +781,23 @@ const MainFeature = () => {
                 )}
               </motion.div>
             )}
-              {currentBreedFact && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="p-4 rounded-lg text-center mb-4 bg-primary/10 text-primary-dark dark:bg-primary/20 dark:text-primary-light border border-primary/20"
-                >
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <ApperIcon name="Info" className="h-5 w-5" />
-                    <p className="font-medium text-sm">Breed Fact</p>
-                  </div>
-                  <p>{currentBreedFact}</p>
-                </motion.div>
+            
+            {showFeedback && (
+              <>
+                {currentBreedFact && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="p-4 rounded-lg text-center mb-4 bg-primary/10 text-primary-dark dark:bg-primary/20 dark:text-primary-light border border-primary/20"
+                  >
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <ApperIcon name="Info" className="h-5 w-5" />
+                      <p className="font-medium text-sm">Breed Fact</p>
+                    </div>
+                    <p>{currentBreedFact}</p>
+                  </motion.div>
+                )}
                 
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -801,11 +805,10 @@ const MainFeature = () => {
                   transition={{ delay: 0.5 }}
                   className="flex justify-center mt-4"
                 >
-                  <button onClick={handleNextQuestion} className="btn-primary flex items-center gap-2">
-                    Next Question <ApperIcon name="ArrowRight" className="h-5 w-5" />
-                  </button>
+                  <button onClick={handleNextQuestion} className="btn-primary flex items-center gap-2">Next Question <ApperIcon name="ArrowRight" className="h-5 w-5" /></button>
                 </motion.div>
-              )}
+              </>
+            )}
           </div>
         )}
 

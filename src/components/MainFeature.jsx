@@ -4,56 +4,84 @@ import { toast } from 'react-toastify';
 import ApperIcon from './ApperIcon';
 
 // Sample data of dog breeds with images
+// Function to convert breed names to API-compatible paths
+const getBreedPath = (breed) => {
+  const breedMap = {
+    "Golden Retriever": "retriever/golden",
+    "Dalmatian": "dalmatian",
+    "Pug": "pug",
+    "Siberian Husky": "husky",
+    "Beagle": "beagle",
+    "German Shepherd": "germanshepherd",
+    "Labrador Retriever": "labrador",
+    "Poodle": "poodle/standard",
+    "Border Collie": "collie/border",
+    "Bulldog": "bulldog/english",
+    "Chihuahua": "chihuahua",
+    "Boxer": "boxer",
+    "Dachshund": "dachshund",
+    "Doberman": "doberman",
+    "Rottweiler": "rottweiler",
+    "Shih Tzu": "shihtzu",
+    "Corgi": "corgi",
+    "Australian Shepherd": "australian/shepherd",
+    "Great Dane": "dane/great",
+    "Cocker Spaniel": "spaniel/cocker"
+  };
+  
+  return breedMap[breed] || breed.toLowerCase().replace(' ', '/');
+};
+
 const dogData = [
   {
     id: 1,
     breed: "Golden Retriever",
-    imageUrl: "https://dog.ceo/api/breed/retriever-golden/images/random",
+    imageUrl: "https://dog.ceo/api/breed/retriever/golden/images/random",
   },
   {
     id: 2,
     breed: "Dalmatian",
-    imageUrl: "https://dog.ceo/api/breed/dalmatian/images/random",
+    imageUrl: "https://dog.ceo/api/breed/dalmatian/images/random", 
   },
   {
     id: 3,
     breed: "Pug",
-    imageUrl: "https://dog.ceo/api/breed/pug/images/random",
+    imageUrl: "https://dog.ceo/api/breed/pug/images/random", 
   },
   {
     id: 4,
     breed: "Siberian Husky",
-    imageUrl: "https://dog.ceo/api/breed/husky/images/random",
+    imageUrl: "https://dog.ceo/api/breed/husky/images/random", 
   },
   {
     id: 5,
     breed: "Beagle",
-    imageUrl: "https://dog.ceo/api/breed/beagle/images/random",
+    imageUrl: "https://dog.ceo/api/breed/beagle/images/random", 
   },
   {
     id: 6,
     breed: "German Shepherd",
-    imageUrl: "https://dog.ceo/api/breed/germanshepherd/images/random",
+    imageUrl: "https://dog.ceo/api/breed/germanshepherd/images/random", 
   },
   {
     id: 7,
     breed: "Labrador Retriever",
-    imageUrl: "https://dog.ceo/api/breed/labrador/images/random",
+    imageUrl: "https://dog.ceo/api/breed/labrador/images/random", 
   },
   {
     id: 8,
     breed: "Poodle",
-    imageUrl: "https://dog.ceo/api/breed/poodle-standard/images/random",
+    imageUrl: "https://dog.ceo/api/breed/poodle/standard/images/random", 
   },
   {
     id: 9,
     breed: "Border Collie",
-    imageUrl: "https://dog.ceo/api/breed/collie-border/images/random",
+    imageUrl: "https://dog.ceo/api/breed/collie/border/images/random", 
   },
   {
     id: 10,
     breed: "Bulldog",
-    imageUrl: "https://dog.ceo/api/breed/bulldog-english/images/random",
+    imageUrl: "https://dog.ceo/api/breed/bulldog/english/images/random", 
   }
 ];
 
@@ -194,31 +222,49 @@ const MainFeature = () => {
     
     const fetchDogImage = async () => {
       try {
-        setImageLoaded(false);
-        setImageError(false);
-        
         const currentQuestion = questions[currentQuestionIndex];
         if (!currentQuestion) return;
         
-        const response = await fetch(currentQuestion.imageUrl);
-        const data = await response.json();
+        setImageLoaded(false);
+        setImageError(false);
+        setRetryCount(0);
         
-        if (data.status === "success" && data.message) {
-          setCurrentImageUrl(data.message);
-        } else {
-          // Fallback to a breed-specific image from another source
-          setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+        // Ensure we're using the correct API path for the breed
+        const breedPath = getBreedPath(currentQuestion.breed);
+        const apiUrl = `https://dog.ceo/api/breed/${breedPath}/images/random`;
+        
+        // Try to fetch from the breed-specific endpoint
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+          
+          if (data.status === "success" && data.message) {
+            // Validate the image URL contains the expected breed path
+            const imageUrl = data.message;
+            const breedPathLower = breedPath.toLowerCase().replace(/\s+/g, '');
+            
+            if (imageUrl.includes(breedPathLower.replace('/', '-')) || 
+                imageUrl.includes(breedPathLower)) {
+              setCurrentImageUrl(imageUrl);
+              return;
+            }
+          }
+          
+          // If we got here, the API returned success but the image URL doesn't match the breed
+          // Fall back to the original endpoint in dogData
+          const backupResponse = await fetch(currentQuestion.imageUrl);
+          const backupData = await backupResponse.json();
+          
+          if (backupData.status === "success" && backupData.message) {
+            setCurrentImageUrl(backupData.message);
+          } else {
+            throw new Error("Invalid image data");
+          }
+        } catch (innerError) {
+          console.error("Error fetching breed-specific image:", innerError);
+          throw innerError; // Let outer catch handle fallback
         }
       } catch (error) {
-        console.error("Error fetching dog image:", error);
-        setImageError(true);
-        // Fallback to a generic dog image
-        setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
-      }
-    };
-    
-    fetchDogImage();
-  }, [currentQuestionIndex, questions, quizActive, quizCompleted]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -227,7 +273,15 @@ const MainFeature = () => {
 
   const handleImageError = () => {
     if (retryCount < 3) {
-      setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+      // Try a fallback using a different breed-specific source
+      if (questions[currentQuestionIndex]) {
+        const breed = questions[currentQuestionIndex].breed;
+        const breedForUrl = breed.toLowerCase().replace(/\s+/g, '-');
+        // Try to use a breed-specific fallback image
+        setCurrentImageUrl(`https://images.dog.ceo/breeds/${getBreedPath(breed).replace('/', '-')}/n02100735_4097.jpg`);
+      } else {
+        setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+      }
       setRetryCount(prev => prev + 1);
     } else {
       setImageError(true);

@@ -62,4 +62,21 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+  
+  /* Image optimization utilities */
+  .img-responsive {
+    @apply max-w-full h-auto;
+  }
+  
+  .img-center {
+    @apply object-center;
+  }
+  
+  .img-contain {
+    @apply object-contain;
+  }
+  
+  .img-cover {
+    @apply object-cover;
+  }
 }

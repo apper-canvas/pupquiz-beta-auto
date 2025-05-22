@@ -366,7 +366,7 @@ const MainFeature = () => {
         {quizActive && !quizCompleted && currentQuestion && (
           <div className="py-2">
             {/* Image Container */}
-            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card">
               {!imageLoaded && !imageError && (
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -374,7 +374,7 @@ const MainFeature = () => {
               )}  
               
               {imageError && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-surface-500 dark:text-surface-400 z-10">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-surface-500 dark:text-surface-400 z-10 bg-surface-200/50 dark:bg-surface-700/50 backdrop-blur-sm">
                   <ApperIcon name="ImageOff" className="h-10 w-10 mb-2" />
                   <p>Image not available</p>
                 </div>
@@ -383,7 +383,7 @@ const MainFeature = () => {
               <img
                 src={currentImageUrl || ''}
                 alt="Dog breed"
-                className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'}`}
+                className={`w-full h-full object-cover object-center transition-all duration-500 ${imageLoaded && !imageError ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
               />

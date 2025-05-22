@@ -353,7 +353,6 @@ const MainFeature = () => {
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(60); // 60 seconds timer
   const [questionTimer, setQuestionTimer] = useState(30); // 30 seconds per question
   const [quizActive, setQuizActive] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
@@ -396,7 +395,6 @@ const MainFeature = () => {
     setQuestions(newQuestions);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setTimeRemaining(60);
     setQuestionTimer(30);
     setQuizActive(true);
     setQuizCompleted(false);
@@ -407,27 +405,6 @@ const MainFeature = () => {
     setCurrentImageUrl('');
   }, [prepareQuestions]);
 
-  // Handle timer
-  useEffect(() => {
-    let timer;
-    if (quizActive && !quizCompleted && timeRemaining > 0) {
-      timer = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setQuizCompleted(true);
-            toast.info("Time's up! Quiz completed.");
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [quizActive, quizCompleted, timeRemaining]);
 
   // Handle question timer
   useEffect(() => {
@@ -664,10 +641,6 @@ const MainFeature = () => {
                 <ApperIcon name="Trophy" className="h-5 w-5 text-secondary" />
                 <span className="font-semibold">Score: {score}/{questions.length}</span>
               </div>
-              <div className={`flex items-center gap-1 ${timeRemaining <= 10 ? 'text-red-300 animate-pulse' : ''}`}>
-                <ApperIcon name="Clock" className="h-5 w-5" />
-                <span className="font-mono font-semibold">{formatTime(timeRemaining)}</span>
-              </div>
               <div className={`flex items-center gap-1 ${questionTimer <= 5 ? 'text-red-300 animate-pulse' : ''}`}>
                 <ApperIcon name="Timer" className="h-5 w-5" />
                 <span className="font-mono font-semibold">{questionTimer}s</span>
@@ -705,7 +678,7 @@ const MainFeature = () => {
             <ApperIcon name="Dog" className="h-16 w-16 mx-auto mb-4 text-primary" />
             <h3 className="text-2xl font-bold mb-3">Welcome to PupQuiz!</h3>
             <p className="text-surface-600 dark:text-surface-300 mb-6 max-w-md mx-auto">
-              Test your knowledge of dog breeds with our fun quiz. You'll have 60 seconds to identify as many breeds as possible.
+              Test your knowledge of dog breeds with our fun quiz. Each question has a 30-second timer.
             </p>
             <button 
               onClick={startQuiz}

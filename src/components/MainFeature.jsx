@@ -748,6 +748,7 @@ const MainFeature = () => {
                   <p className="font-medium">Not quite. This is actually a {currentQuestion.breed}.</p>
                 )}
               </motion.div>
+            )}
               {currentBreedFact && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -762,7 +763,6 @@ const MainFeature = () => {
                   <p>{currentBreedFact}</p>
                 </motion.div>
               )}
-            )}
           </div>
         )}
 

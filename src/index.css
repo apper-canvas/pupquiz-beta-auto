@@ -64,24 +64,39 @@
   }
   
   /* Image optimization utilities */
+  .img-container {
+    @apply relative overflow-hidden;
+    position: relative;
+    background-color: rgba(243, 244, 246, 0.5);
+  }
+  
   .img-responsive {
     @apply max-w-full h-auto;
   }
   
   .img-center {
     @apply object-center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
   
   .img-contain {
     @apply object-contain;
+    width: 100%;
+    height: 100%;
+    object-position: center;
   }
   
   .img-cover {
     @apply object-cover;
+    width: 100%;
+    height: 100%;
   }
   
   /* Additional image display utilities */
   .img-fade-in {
-    @apply transition-opacity duration-300 ease-in-out;
+    @apply transition-all duration-300 ease-in-out;
+    opacity: 1;
   }
 }

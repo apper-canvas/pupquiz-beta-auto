@@ -363,11 +363,11 @@ const MainFeature = () => {
     if (!quizActive || quizCompleted || !questions.length) return;
     
     const fetchDogImage = async () => {
+      setImageLoaded(false);
+      setImageError(false);
+      setRetryCount(0);
+      
       try {
-        const currentQuestion = questions[currentQuestionIndex];
-        if (!currentQuestion) return;
-        
-        setImageLoaded(false);
         setImageError(false);
         setRetryCount(0);
         
@@ -379,7 +379,9 @@ const MainFeature = () => {
         try {
           const response = await fetch(apiUrl);
           const data = await response.json();
-          
+
+          // First attempt: Try the breed-specific endpoint
+          // Check if we got a valid response
           if (data.status === "success" && data.message) {
             // Validate the image URL contains the expected breed path
             const imageUrl = data.message;
@@ -390,11 +392,31 @@ const MainFeature = () => {
               setCurrentImageUrl(imageUrl);
               return;
             }
+
+            // If the URL doesn't contain the breed name but is still valid, use it anyway
+            setCurrentImageUrl(data.message);
+            return;
           }
           
-          // If we got here, the API returned success but the image URL doesn't match the breed
-          // Fall back to the original endpoint in dogData
-          const backupResponse = await fetch(currentQuestion.imageUrl);
+          throw new Error("Invalid breed-specific image");
+        } catch (innerError) {
+          console.error("Error fetching breed-specific image:", innerError.message);
+          // Fallback 1: Try the generic random dog image endpoint
+          try {
+            const fallbackUrl = "https://dog.ceo/api/breeds/image/random";
+            const fallbackResponse = await fetch(fallbackUrl);
+            const fallbackData = await fallbackResponse.json();
+            
+            if (fallbackData.status === "success" && fallbackData.message) {
+              setCurrentImageUrl(fallbackData.message);
+              return;
+            }
+          } catch (fallbackError) {
+            console.error("Error fetching fallback image:", fallbackError.message);
+          }
+          
+          // Fallback 2: Try using an external dog image service
+          const backupResponse = await fetch(`https://placedog.net/500/280?r=${Math.random()}`);
           const backupData = await backupResponse.json();
           
           if (backupData.status === "success" && backupData.message) {
@@ -402,15 +424,15 @@ const MainFeature = () => {
           } else {
             throw new Error("Invalid image data");
           }
-        } catch (innerError) {
-          console.error("Error fetching breed-specific image:", innerError.message);
-          throw innerError; // Let outer catch handle the fallback
         }
       } catch (error) {
-        console.error("Error fetching dog image:", error.message || error);
-        setImageError(true);
-        toast.error("Failed to load dog image. Please try again.");
+        console.error("Error fetching dog image:", error);
+        // Last resort fallback - use a placeholder image service
+        setCurrentImageUrl(`https://via.placeholder.com/500x300/f5f5f5/a0a0a0?text=Dog+Breed+Image`);
+        // Don't set image error yet, let the img element's onError handle it if this also fails
       }
+      
+      // Note: If all attempts fail, the img element's onError handler will be triggered
     };
 
     fetchDogImage();
@@ -424,15 +446,33 @@ const MainFeature = () => {
   const handleImageError = () => {
     if (retryCount < 3) {
       // Try a fallback using a different breed-specific source
+      setRetryCount(prev => prev + 1);
+      
       if (questions[currentQuestionIndex]) {
         const breed = questions[currentQuestionIndex].breed;
         const breedForUrl = breed.toLowerCase().replace(/\s+/g, '-');
-        // Try to use a breed-specific fallback image
-        setCurrentImageUrl(`https://images.dog.ceo/breeds/${getBreedPath(breed).replace('/', '-')}/n02100735_4097.jpg`);
+        
+        // Try different fallback strategies based on retry count
+        if (retryCount === 0) {
+          // First retry: Try a different format of the breed path
+          const altBreedPath = breed.toLowerCase().split(' ').reverse().join('/');
+          setCurrentImageUrl(`https://dog.ceo/api/breed/${altBreedPath}/images/random`);
+        } else if (retryCount === 1) {
+          // Second retry: Try dog.ceo breeds images directory directly
+          const breedPath = getBreedPath(breed).replace('/', '-');
+          setCurrentImageUrl(`https://images.dog.ceo/breeds/${breedPath}/n02100735_4097.jpg`);
+        } else {
+          // Third retry: Use a public dog image placeholder service
+          setCurrentImageUrl(`https://placedog.net/500/280?id=${Math.floor(Math.random() * 100)}`);
+        }
       } else {
-        setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+        // If we don't have question data, use a generic dog placeholder
+        setCurrentImageUrl(`https://placedog.net/500/280?id=${Math.floor(Math.random() * 100)}`);
       }
-      setRetryCount(prev => prev + 1);
+      
+      // Add a small delay before setting the new URL to prevent rapid retries
+      setTimeout(() => setImageLoaded(false), 100);
+      
     } else {
       setImageError(true);
       toast.error("Image failed to load. Please continue with the quiz.");
@@ -508,7 +548,7 @@ const MainFeature = () => {
         {quizActive && !quizCompleted && currentQuestion && (
           <div className="py-2">
             {/* Image Container */}
-            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card">
+            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card img-container">
               {(!imageLoaded && !imageError) && (
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -525,7 +565,7 @@ const MainFeature = () => {
               <img
                 src={currentImageUrl || ''}
                 alt="Dog breed"
-                className={`w-full h-full object-cover object-center transition-all duration-500 ${imageLoaded && !imageError ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+                className={`w-full h-full img-cover img-center img-fade-in ${imageLoaded && !imageError ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
                 onLoad={handleImageLoad}
                 onError={handleImageError}
               />

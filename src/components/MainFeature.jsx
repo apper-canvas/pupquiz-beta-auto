@@ -668,7 +668,7 @@ const MainFeature = () => {
         {quizActive && !quizCompleted && currentQuestion && (
           <div className="py-2">
             {/* Image Container */}
-            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card img-container">
+            <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card img-container border border-surface-200 dark:border-surface-700">
               {(!imageLoaded && !imageError) && (
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -677,16 +677,16 @@ const MainFeature = () => {
               
               {imageError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-surface-500 dark:text-surface-400 z-10 bg-surface-200/50 dark:bg-surface-700/50 backdrop-blur-sm">
-                  <ApperIcon name="ImageOff" className="h-10 w-10 mb-2" />
+                  <ApperIcon name="ImageOff" className="h-10 w-10 mb-2 opacity-75" />
                   <p>Image not available</p>
                 </div>
               )}
               
               <img
                 src={currentImageUrl || ''}
-                alt="Dog breed"
-                className={`w-full h-full img-cover img-center img-fade-in ${imageLoaded && !imageError ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
-                onLoad={handleImageLoad}
+                alt={currentQuestion.breed || "Dog breed"}
+                className={`img-contain img-high-quality img-fade-in ${imageLoaded && !imageError ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
+                onLoad={handleImageLoad} 
                 onError={handleImageError}
               />
             </div>

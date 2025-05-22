@@ -65,33 +65,50 @@
   
   /* Image optimization utilities */
   .img-container {
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden rounded-xl;
     position: relative;
-    background-color: rgba(243, 244, 246, 0.5);
+    background-color: rgba(243, 244, 246, 0.7);
+    transform: translateZ(0); /* Force hardware acceleration */
   }
   
   .img-responsive {
-    @apply max-w-full h-auto;
+    @apply max-w-full h-auto object-contain;
+    image-rendering: -webkit-optimize-contrast; /* Improves image clarity in webkit */
+    image-rendering: crisp-edges; /* Improves image clarity in other browsers */
   }
   
   .img-center {
-    @apply object-center;
-    position: relative;
+    @apply object-center absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
   
   .img-contain {
-    @apply object-contain;
+    @apply object-contain object-center;
     width: 100%;
     height: 100%;
-    object-position: center;
+    max-height: 100%;
+    max-width: 100%;
   }
   
   .img-cover {
-    @apply object-cover;
+    @apply object-cover object-center;
     width: 100%;
     height: 100%;
+    transform: scale(1.01); /* Slight scale to prevent white edges */
+  }
+  
+  /* New utility for high quality images */
+  .img-high-quality {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+    filter: brightness(1.03) contrast(1.05);
   }
   
   /* Additional image display utilities */

@@ -462,25 +462,37 @@ const MainFeature = () => {
       toast.info(`The correct answer is: ${currentQuestion.breed}`);
     }
     
+    // Move to next question after 30 seconds
+    clearTimeout(); // Clear any existing question timer
+    setTimeout(() => {
+      handleNextQuestion();
+    }, 30000);
+  };  
+  
+  // Handle next question button click
+  const handleNextQuestion = () => {
+    setShowFeedback(false);
+    setSelectedAnswer(null);
+    setImageLoaded(false);
+    setCurrentImageUrl('');
+    setImageError(false);
+    setCurrentBreedFact('');
+    
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setQuestionTimer(30); // Reset timer for next question
+    } else {
+      setQuizCompleted(true);
+      toast.info("Quiz completed!");
+    }
+  };
+
     // Move to next question after 2 seconds
     clearTimeout(); // Clear any existing question timer
     setTimeout(() => {
-      setShowFeedback(false);
-      setSelectedAnswer(null);
-      setImageLoaded(false);
-      setCurrentImageUrl('');
-      setImageError(false);
-      setCurrentBreedFact('');
-      
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(prev => prev + 1);
-        setQuestionTimer(30); // Reset timer for next question
-      } else {
-        setQuizCompleted(true);
-        toast.info("Quiz completed!");
-      }
+      handleNextQuestion();
     }, 30000);
-  };  
+  };
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -786,6 +798,17 @@ const MainFeature = () => {
                     <p className="font-medium text-sm">Breed Fact</p>
                   </div>
                   <p>{currentBreedFact}</p>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="flex justify-center mt-4"
+                >
+                  <button onClick={handleNextQuestion} className="btn-primary flex items-center gap-2">
+                    Next Question <ApperIcon name="ArrowRight" className="h-5 w-5" />
+                  </button>
                 </motion.div>
               )}
           </div>

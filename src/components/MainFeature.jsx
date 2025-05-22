@@ -190,12 +190,12 @@ const MainFeature = () => {
     console.log("Image loaded successfully");
   };
 
-  const handleImageError = () => {
+  const handleImageError = (e) => {
     setImageError(true);
     setImageLoaded(true);
-    console.log("Image failed to load:", currentQuestion?.imageUrl);
+    console.log("Image failed to load:", e.target.src);
     // Optionally, you could try a fallback image here
-    // e.target.src = "fallback-image-path.jpg";
+    // e.target.src = "/fallback-image-path.jpg";
     toast.error("Image failed to load. Please continue with the quiz.");
   };
 
@@ -283,7 +283,7 @@ const MainFeature = () => {
               )}
               
               <img
-                src={currentQuestion.imageUrl}
+                src={currentQuestion?.imageUrl || ''}
                 alt="Dog breed"
                 className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={handleImageLoad}

@@ -354,6 +354,7 @@ const MainFeature = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(60); // 60 seconds timer
+  const [questionTimer, setQuestionTimer] = useState(30); // 30 seconds per question
   const [quizActive, setQuizActive] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -396,6 +397,7 @@ const MainFeature = () => {
     setCurrentQuestionIndex(0);
     setScore(0);
     setTimeRemaining(60);
+    setQuestionTimer(30);
     setQuizActive(true);
     setQuizCompleted(false);
     setShowFeedback(false);
@@ -427,6 +429,39 @@ const MainFeature = () => {
     };
   }, [quizActive, quizCompleted, timeRemaining]);
 
+  // Handle question timer
+  useEffect(() => {
+    let timer;
+    if (quizActive && !quizCompleted && !showFeedback && questionTimer > 0) {
+      timer = setTimeout(() => {
+        setQuestionTimer(prev => {
+          if (prev <= 1) {
+            // Time's up for this question - move to next question
+            setShowFeedback(false);
+            setSelectedAnswer(null);
+            setImageLoaded(false);
+            setCurrentImageUrl('');
+            setImageError(false);
+            setCurrentBreedFact('');
+            
+            if (currentQuestionIndex < questions.length - 1) {
+              setCurrentQuestionIndex(prev => prev + 1);
+              return 30; // Reset timer for next question
+            } else {
+              setQuizCompleted(true);
+              toast.info("Quiz completed!");
+              return 0;
+            }
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [quizActive, quizCompleted, questionTimer, showFeedback, currentQuestionIndex, questions.length]);
+
   // Handle answer selection
   const handleAnswerSelect = (answer) => {
     if (showFeedback || !quizActive || quizCompleted) return;
@@ -451,6 +486,7 @@ const MainFeature = () => {
     }
     
     // Move to next question after 2 seconds
+    clearTimeout(); // Clear any existing question timer
     setTimeout(() => {
       setShowFeedback(false);
       setSelectedAnswer(null);
@@ -461,6 +497,7 @@ const MainFeature = () => {
       
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
+        setQuestionTimer(30); // Reset timer for next question
       } else {
         setQuizCompleted(true);
         toast.info("Quiz completed!");
@@ -559,6 +596,10 @@ const MainFeature = () => {
   }, [currentQuestionIndex, questions, quizActive, quizCompleted]);
 
   const handleImageLoad = () => {
+    // Reset question timer when new question appears
+    if (!showFeedback) {
+      setQuestionTimer(30);
+    }
     setImageLoaded(true);
     setImageError(false);
   };
@@ -627,6 +668,10 @@ const MainFeature = () => {
                 <ApperIcon name="Clock" className="h-5 w-5" />
                 <span className="font-mono font-semibold">{formatTime(timeRemaining)}</span>
               </div>
+              <div className={`flex items-center gap-1 ${questionTimer <= 5 ? 'text-red-300 animate-pulse' : ''}`}>
+                <ApperIcon name="Timer" className="h-5 w-5" />
+                <span className="font-mono font-semibold">{questionTimer}s</span>
+              </div>
             </div>
           )}
         </div>
@@ -639,6 +684,13 @@ const MainFeature = () => {
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
+            <div className="mt-1 w-full bg-white/20 rounded-full h-2.5">
+              <div 
+                className="bg-secondary-light h-2.5 rounded-full transition-all duration-300"
+                style={{ width: `${(questionTimer / 30) * 100}%` }}
+              ></div>
+            </div>
+
             <div className="mt-1 text-sm text-white/80 text-center">
               Question {currentQuestionIndex + 1} of {questions.length}
             </div>

@@ -403,7 +403,7 @@ const MainFeature = () => {
             throw new Error("Invalid image data");
           }
         } catch (innerError) {
-          console.error("Error fetching breed-specific image:", innerError);
+          console.error("Error fetching breed-specific image:", innerError.message);
           throw innerError; // Let outer catch handle fallback
         }
       } catch (error) {

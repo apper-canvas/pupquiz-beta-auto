@@ -8,52 +8,52 @@ const dogData = [
   {
     id: 1,
     breed: "Golden Retriever",
-    imageUrl: "https://images.dog.ceo/breeds/retriever-golden/n02099601_3383.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/retriever-golden/n02099601_1024.jpg",
   },
   {
     id: 2,
     breed: "Dalmatian",
-    imageUrl: "https://images.dog.ceo/breeds/dalmatian/cooper2.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/dalmatian/n02110341_7645.jpg",
   },
   {
     id: 3,
     breed: "Pug",
-    imageUrl: "https://images.dog.ceo/breeds/pug/n02110958_13439.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/pug/n02110958_12546.jpg",
   },
   {
     id: 4,
     breed: "Siberian Husky",
-    imageUrl: "https://images.dog.ceo/breeds/husky/n02110185_10047.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/husky/n02110185_1469.jpg",
   },
   {
     id: 5,
     breed: "Beagle",
-    imageUrl: "https://images.dog.ceo/breeds/beagle/n02088364_16503.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/beagle/n02088364_11136.jpg",
   },
   {
     id: 6,
     breed: "German Shepherd",
-    imageUrl: "https://images.dog.ceo/breeds/germanshepherd/n02106662_21068.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/germanshepherd/n02106662_23986.jpg",
   },
   {
     id: 7,
     breed: "Labrador Retriever",
-    imageUrl: "https://images.dog.ceo/breeds/labrador/n02099712_3503.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/labrador/n02099712_1030.jpg",
   },
   {
     id: 8,
     breed: "Poodle",
-    imageUrl: "https://images.dog.ceo/breeds/poodle-standard/n02113799_2292.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/poodle-standard/n02113799_2061.jpg",
   },
   {
     id: 9,
     breed: "Border Collie",
-    imageUrl: "https://images.dog.ceo/breeds/collie-border/n02106166_1172.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/collie-border/n02106166_355.jpg",
   },
   {
     id: 10,
     breed: "Bulldog",
-    imageUrl: "https://images.dog.ceo/breeds/bulldog-english/jager-1.jpg",
+    imageUrl: "https://images.dog.ceo/breeds/bulldog-english/n02108422_1047.jpg",
   }
 ];
 
@@ -187,11 +187,16 @@ const MainFeature = () => {
   const handleImageLoad = () => {
     setImageLoaded(true);
     setImageError(false);
+    console.log("Image loaded successfully");
   };
 
   const handleImageError = () => {
     setImageError(true);
     setImageLoaded(true);
+    console.log("Image failed to load:", currentQuestion?.imageUrl);
+    // Optionally, you could try a fallback image here
+    // e.target.src = "fallback-image-path.jpg";
+    toast.error("Image failed to load. Please continue with the quiz.");
   };
 
   // Get current question
@@ -265,13 +270,13 @@ const MainFeature = () => {
             {/* Image Container */}
             <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
               {!imageLoaded && !imageError && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
               )}
               
               {imageError && (
-                <div className="flex flex-col items-center justify-center text-surface-500 dark:text-surface-400">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-surface-500 dark:text-surface-400 z-10">
                   <ApperIcon name="ImageOff" className="h-10 w-10 mb-2" />
                   <p>Image not available</p>
                 </div>

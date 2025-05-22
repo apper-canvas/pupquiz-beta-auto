@@ -265,6 +265,14 @@ const MainFeature = () => {
           throw innerError; // Let outer catch handle fallback
         }
       } catch (error) {
+        console.error("Error fetching dog image:", error);
+        setImageError(true);
+        toast.error("Failed to load dog image. Please try again.");
+      }
+    };
+
+    fetchDogImage();
+  }, [currentQuestionIndex, questions, quizActive, quizCompleted]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);

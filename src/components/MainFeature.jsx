@@ -8,52 +8,52 @@ const dogData = [
   {
     id: 1,
     breed: "Golden Retriever",
-    imageUrl: "https://images.dog.ceo/breeds/retriever-golden/n02099601_1024.jpg",
+    imageUrl: "https://dog.ceo/api/breed/retriever-golden/images/random",
   },
   {
     id: 2,
     breed: "Dalmatian",
-    imageUrl: "https://images.dog.ceo/breeds/dalmatian/n02110341_7645.jpg",
+    imageUrl: "https://dog.ceo/api/breed/dalmatian/images/random",
   },
   {
     id: 3,
     breed: "Pug",
-    imageUrl: "https://images.dog.ceo/breeds/pug/n02110958_12546.jpg",
+    imageUrl: "https://dog.ceo/api/breed/pug/images/random",
   },
   {
     id: 4,
     breed: "Siberian Husky",
-    imageUrl: "https://images.dog.ceo/breeds/husky/n02110185_1469.jpg",
+    imageUrl: "https://dog.ceo/api/breed/husky/images/random",
   },
   {
     id: 5,
     breed: "Beagle",
-    imageUrl: "https://images.dog.ceo/breeds/beagle/n02088364_11136.jpg",
+    imageUrl: "https://dog.ceo/api/breed/beagle/images/random",
   },
   {
     id: 6,
     breed: "German Shepherd",
-    imageUrl: "https://images.dog.ceo/breeds/germanshepherd/n02106662_23986.jpg",
+    imageUrl: "https://dog.ceo/api/breed/germanshepherd/images/random",
   },
   {
     id: 7,
     breed: "Labrador Retriever",
-    imageUrl: "https://images.dog.ceo/breeds/labrador/n02099712_1030.jpg",
+    imageUrl: "https://dog.ceo/api/breed/labrador/images/random",
   },
   {
     id: 8,
     breed: "Poodle",
-    imageUrl: "https://images.dog.ceo/breeds/poodle-standard/n02113799_2061.jpg",
+    imageUrl: "https://dog.ceo/api/breed/poodle-standard/images/random",
   },
   {
     id: 9,
     breed: "Border Collie",
-    imageUrl: "https://images.dog.ceo/breeds/collie-border/n02106166_355.jpg",
+    imageUrl: "https://dog.ceo/api/breed/collie-border/images/random",
   },
   {
     id: 10,
     breed: "Bulldog",
-    imageUrl: "https://images.dog.ceo/breeds/bulldog-english/n02108422_1047.jpg",
+    imageUrl: "https://dog.ceo/api/breed/bulldog-english/images/random",
   }
 ];
 
@@ -76,6 +76,8 @@ const MainFeature = () => {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [currentImageUrl, setCurrentImageUrl] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
 
   // Prepare quiz questions
   const prepareQuestions = useCallback(() => {
@@ -117,6 +119,7 @@ const MainFeature = () => {
     setSelectedAnswer(null);
     setImageLoaded(false);
     setImageError(false);
+    setCurrentImageUrl('');
   }, [prepareQuestions]);
 
   // Handle timer
@@ -163,6 +166,7 @@ const MainFeature = () => {
       setShowFeedback(false);
       setSelectedAnswer(null);
       setImageLoaded(false);
+      setCurrentImageUrl('');
       setImageError(false);
       
       if (currentQuestionIndex < questions.length - 1) {
@@ -184,19 +188,51 @@ const MainFeature = () => {
   // Calculate progress percentage
   const progressPercentage = quizActive ? ((currentQuestionIndex) / questions.length) * 100 : 0;
 
+  // Fetch dog image when question changes
+  useEffect(() => {
+    if (!quizActive || quizCompleted || !questions.length) return;
+    
+    const fetchDogImage = async () => {
+      try {
+        setImageLoaded(false);
+        setImageError(false);
+        
+        const currentQuestion = questions[currentQuestionIndex];
+        if (!currentQuestion) return;
+        
+        const response = await fetch(currentQuestion.imageUrl);
+        const data = await response.json();
+        
+        if (data.status === "success" && data.message) {
+          setCurrentImageUrl(data.message);
+        } else {
+          // Fallback to a breed-specific image from another source
+          setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+        }
+      } catch (error) {
+        console.error("Error fetching dog image:", error);
+        setImageError(true);
+        // Fallback to a generic dog image
+        setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+      }
+    };
+    
+    fetchDogImage();
+  }, [currentQuestionIndex, questions, quizActive, quizCompleted]);
+
   const handleImageLoad = () => {
     setImageLoaded(true);
     setImageError(false);
-    console.log("Image loaded successfully");
   };
 
-  const handleImageError = (e) => {
-    setImageError(true);
-    setImageLoaded(true);
-    console.log("Image failed to load:", e.target.src);
-    // Optionally, you could try a fallback image here
-    // e.target.src = "/fallback-image-path.jpg";
-    toast.error("Image failed to load. Please continue with the quiz.");
+  const handleImageError = () => {
+    if (retryCount < 3) {
+      setCurrentImageUrl(`https://placedog.net/500/280?r=${Math.random()}`);
+      setRetryCount(prev => prev + 1);
+    } else {
+      setImageError(true);
+      toast.error("Image failed to load. Please continue with the quiz.");
+    }
   };
 
   // Get current question
@@ -273,7 +309,7 @@ const MainFeature = () => {
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
-              )}
+              )}  
               
               {imageError && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-surface-500 dark:text-surface-400 z-10">
@@ -283,7 +319,7 @@ const MainFeature = () => {
               )}
               
               <img
-                src={currentQuestion?.imageUrl || ''}
+                src={currentImageUrl || ''}
                 alt="Dog breed"
                 className={`w-full h-full object-cover transition-opacity duration-300 ${imageLoaded && !imageError ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={handleImageLoad}

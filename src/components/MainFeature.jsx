@@ -6,92 +6,234 @@ import ApperIcon from './ApperIcon';
 // Sample data of dog breeds with images
 // Function to convert breed names to API-compatible paths
 const getBreedPath = (breed) => {
-  const breedMap = {
-    "Golden Retriever": "retriever/golden",
-    "Dalmatian": "dalmatian",
-    "Pug": "pug",
-    "Siberian Husky": "husky",
-    "Beagle": "beagle",
-    "German Shepherd": "germanshepherd",
-    "Labrador Retriever": "labrador",
-    "Poodle": "poodle/standard",
-    "Border Collie": "collie/border",
-    "Bulldog": "bulldog/english",
-    "Chihuahua": "chihuahua",
-    "Boxer": "boxer",
-    "Dachshund": "dachshund",
-    "Doberman": "doberman",
-    "Rottweiler": "rottweiler",
-    "Shih Tzu": "shihtzu",
-    "Corgi": "corgi",
-    "Australian Shepherd": "australian/shepherd",
-    "Great Dane": "dane/great",
-    "Cocker Spaniel": "spaniel/cocker"
-  };
+  // Special cases mapping for breeds that have specific API paths
+  // This maps display names to the API path structure
+  if (breedPathMap[breed]) {
+    return breedPathMap[breed];
+  }
   
-  return breedMap[breed] || breed.toLowerCase().replace(' ', '/');
+  // Default fallback if not in mapping
+  return breed.toLowerCase().replace(/\s+/g, '/');
 };
 
-const dogData = [
-  {
-    id: 1,
-    breed: "Golden Retriever",
-    imageUrl: "https://dog.ceo/api/breed/retriever/golden/images/random",
-  },
-  {
-    id: 2,
-    breed: "Dalmatian",
-    imageUrl: "https://dog.ceo/api/breed/dalmatian/images/random", 
-  },
-  {
-    id: 3,
-    breed: "Pug",
-    imageUrl: "https://dog.ceo/api/breed/pug/images/random", 
-  },
-  {
-    id: 4,
-    breed: "Siberian Husky",
-    imageUrl: "https://dog.ceo/api/breed/husky/images/random", 
-  },
-  {
-    id: 5,
-    breed: "Beagle",
-    imageUrl: "https://dog.ceo/api/breed/beagle/images/random", 
-  },
-  {
-    id: 6,
-    breed: "German Shepherd",
-    imageUrl: "https://dog.ceo/api/breed/germanshepherd/images/random", 
-  },
-  {
-    id: 7,
-    breed: "Labrador Retriever",
-    imageUrl: "https://dog.ceo/api/breed/labrador/images/random", 
-  },
-  {
-    id: 8,
-    breed: "Poodle",
-    imageUrl: "https://dog.ceo/api/breed/poodle/standard/images/random", 
-  },
-  {
-    id: 9,
-    breed: "Border Collie",
-    imageUrl: "https://dog.ceo/api/breed/collie/border/images/random", 
-  },
-  {
-    id: 10,
-    breed: "Bulldog",
-    imageUrl: "https://dog.ceo/api/breed/bulldog/english/images/random", 
-  }
-];
+// Mapping for breed display names to API paths
+const breedPathMap = {
+  "Affenpinscher": "affenpinscher",
+  "Afghan Hound": "hound/afghan",
+  "African Hunting Dog": "african",
+  "Airedale Terrier": "terrier/airedale",
+  "Akbash Dog": "akbash",
+  "Akita": "akita",
+  "Alapaha Blue Blood Bulldog": "bulldog/alapaha",
+  "Alaskan Husky": "husky/alaskan",
+  "Alaskan Malamute": "malamute",
+  "American Bulldog": "bulldog/american",
+  "American Bully": "bully/american",
+  "American Eskimo Dog": "eskimo",
+  "American Foxhound": "foxhound/american",
+  "American Pit Bull Terrier": "pitbull",
+  "American Staffordshire Terrier": "terrier/american",
+  "American Water Spaniel": "spaniel/american",
+  "Anatolian Shepherd Dog": "shepherd/anatolian",
+  "Appenzeller Sennenhund": "appenzeller",
+  "Australian Cattle Dog": "cattledog/australian",
+  "Australian Kelpie": "kelpie",
+  "Australian Shepherd": "australian/shepherd",
+  "Australian Terrier": "terrier/australian",
+  "Azawakh": "azawakh",
+  "Barbet": "barbet",
+  "Basenji": "basenji",
+  "Basset Bleu de Gascogne": "basset/bleu",
+  "Basset Hound": "basset",
+  "Beagle": "beagle",
+  "Bearded Collie": "collie/bearded",
+  "Beauceron": "beauceron",
+  "Bedlington Terrier": "terrier/bedlington",
+  "Belgian Malinois": "malinois",
+  "Belgian Sheepdog": "sheepdog/belgian",
+  "Belgian Tervuren": "tervuren",
+  "Bernese Mountain Dog": "mountain/bernese",
+  "Bichon Frise": "bichon",
+  "Black and Tan Coonhound": "coonhound/black",
+  "Bloodhound": "bloodhound",
+  "Bluetick Coonhound": "coonhound/bluetick",
+  "Boerboel": "boerboel",
+  "Border Collie": "collie/border",
+  "Border Terrier": "terrier/border",
+  "Borzoi": "borzoi",
+  "Boston Terrier": "terrier/boston",
+  "Bouvier des Flandres": "bouvier",
+  "Boxer": "boxer",
+  "Boykin Spaniel": "spaniel/boykin",
+  "Bracco Italiano": "bracco",
+  "Briard": "briard",
+  "Brittany": "brittany",
+  "Brussels Griffon": "griffon/brussels",
+  "Bull Terrier": "terrier/bull",
+  "Bulldog": "bulldog/english",
+  "Bullmastiff": "bullmastiff",
+  "Cairn Terrier": "terrier/cairn",
+  "Canaan Dog": "canaan",
+  "Cane Corso": "corso",
+  "Cardigan Welsh Corgi": "corgi/cardigan",
+  "Catahoula Leopard Dog": "catahoula",
+  "Caucasian Shepherd": "shepherd/caucasian",
+  "Cavalier King Charles Spaniel": "spaniel/cavalier",
+  "Chesapeake Bay Retriever": "retriever/chesapeake",
+  "Chihuahua": "chihuahua",
+  "Chinese Crested": "crested",
+  "Chinese Shar-Pei": "sharpei",
+  "Chow Chow": "chow",
+  "Clumber Spaniel": "spaniel/clumber",
+  "Cocker Spaniel": "spaniel/cocker",
+  "Collie": "collie",
+  "Coton de Tulear": "cotondetulear",
+  "Dachshund": "dachshund",
+  "Dalmatian": "dalmatian",
+  "Dandie Dinmont Terrier": "terrier/dandie",
+  "Doberman Pinscher": "doberman",
+  "Dogo Argentino": "dogo",
+  "Dutch Shepherd": "shepherd/dutch",
+  "English Cocker Spaniel": "spaniel/english",
+  "English Foxhound": "foxhound/english",
+  "English Setter": "setter/english",
+  "English Springer Spaniel": "spaniel/springer",
+  "English Toy Terrier": "terrier/toy",
+  "Entlebucher Mountain Dog": "entlebucher",
+  "Eskimo Dog": "eskimo",
+  "Estrela Mountain Dog": "mountain/estrela",
+  "Eurasier": "eurasier",
+  "Field Spaniel": "spaniel/field",
+  "Finnish Lapphund": "lapphund/finnish",
+  "Finnish Spitz": "spitz/finnish",
+  "Flat-Coated Retriever": "retriever/flatcoated",
+  "French Bulldog": "bulldog/french",
+  "German Pinscher": "pinscher/german",
+  "German Shepherd": "germanshepherd",
+  "German Shorthaired Pointer": "pointer/germanhaired",
+  "German Wirehaired Pointer": "pointer/germanwirehaired",
+  "Giant Schnauzer": "schnauzer/giant",
+  "Glen of Imaal Terrier": "terrier/glen",
+  "Golden Retriever": "retriever/golden",
+  "Gordon Setter": "setter/gordon",
+  "Great Dane": "dane/great",
+  "Great Pyrenees": "pyrenees",
+  "Greater Swiss Mountain Dog": "mountain/swiss",
+  "Greyhound": "greyhound",
+  "Harrier": "harrier",
+  "Havanese": "havanese",
+  "Ibizan Hound": "hound/ibizan",
+  "Icelandic Sheepdog": "sheepdog/icelandic",
+  "Irish Red and White Setter": "setter/irish",
+  "Irish Setter": "setter/irish",
+  "Irish Terrier": "terrier/irish",
+  "Irish Water Spaniel": "spaniel/irish",
+  "Irish Wolfhound": "wolfhound/irish",
+  "Italian Greyhound": "greyhound/italian",
+  "Jack Russell Terrier": "terrier/russell",
+  "Japanese Chin": "chin/japanese",
+  "Japanese Spitz": "spitz/japanese",
+  "Keeshond": "keeshond",
+  "Kerry Blue Terrier": "terrier/kerryblue",
+  "Komondor": "komondor",
+  "Kuvasz": "kuvasz",
+  "Labrador Retriever": "labrador",
+  "Lakeland Terrier": "terrier/lakeland",
+  "Lancashire Heeler": "heeler/lancashire",
+  "Leonberger": "leonberg",
+  "Lhasa Apso": "lhasa",
+  "Löwchen": "lowchen",
+  "Maltese": "maltese",
+  "Manchester Terrier": "terrier/manchester",
+  "Maremma Sheepdog": "sheepdog/maremma",
+  "Mastiff": "mastiff",
+  "Miniature Bull Terrier": "terrier/miniature",
+  "Miniature Pinscher": "pinscher",
+  "Miniature Schnauzer": "schnauzer/miniature",
+  "Newfoundland": "newfoundland",
+  "Norfolk Terrier": "terrier/norfolk",
+  "Norwegian Buhund": "buhund/norwegian",
+  "Norwegian Elkhound": "elkhound/norwegian",
+  "Norwegian Lundehund": "lundehund",
+  "Norwich Terrier": "terrier/norwich",
+  "Nova Scotia Duck Tolling Retriever": "retriever/duck",
+  "Old English Sheepdog": "sheepdog/english",
+  "Otterhound": "otterhound",
+  "Papillon": "papillon",
+  "Parson Russell Terrier": "terrier/parson",
+  "Pekingese": "pekingese",
+  "Pembroke Welsh Corgi": "corgi/pembroke",
+  "Petit Basset Griffon Vendéen": "basset/griffon",
+  "Pharaoh Hound": "hound/pharaoh",
+  "Plott Hound": "hound/plott",
+  "Pointer": "pointer",
+  "Polish Lowland Sheepdog": "sheepdog/polish",
+  "Pomeranian": "pomeranian",
+  "Poodle (Miniature)": "poodle/miniature",
+  "Poodle (Standard)": "poodle/standard",
+  "Poodle (Toy)": "poodle/toy",
+  "Portuguese Water Dog": "waterdog/portuguese",
+  "Pug": "pug",
+  "Puli": "puli",
+  "Pumi": "pumi",
+  "Rat Terrier": "terrier/rat",
+  "Redbone Coonhound": "coonhound/redbone",
+  "Rhodesian Ridgeback": "ridgeback/rhodesian",
+  "Rottweiler": "rottweiler",
+  "Saint Bernard": "stbernard",
+  "Saluki": "saluki",
+  "Samoyed": "samoyed",
+  "Schipperke": "schipperke",
+  "Scottish Deerhound": "deerhound/scottish",
+  "Scottish Terrier": "terrier/scottish",
+  "Sealyham Terrier": "terrier/sealyham",
+  "Shetland Sheepdog": "sheepdog/shetland",
+  "Shiba Inu": "shiba",
+  "Shih Tzu": "shihtzu",
+  "Siberian Husky": "husky",
+  "Silky Terrier": "terrier/silky",
+  "Skye Terrier": "terrier/skye",
+  "Sloughi": "sloughi",
+  "Smooth Fox Terrier": "terrier/fox",
+  "Soft-coated Wheaten Terrier": "terrier/wheaten",
+  "Spanish Water Dog": "waterdog/spanish",
+  "Spinone Italiano": "spinone",
+  "Staffordshire Bull Terrier": "bullterrier/staffordshire",
+  "Standard Schnauzer": "schnauzer/standard",
+  "Sussex Spaniel": "spaniel/sussex",
+  "Swedish Vallhund": "vallhund/swedish",
+  "Thai Ridgeback": "ridgeback/thai",
+  "Tibetan Mastiff": "mastiff/tibetan",
+  "Tibetan Spaniel": "spaniel/tibetan",
+  "Tibetan Terrier": "terrier/tibetan",
+  "Toy Fox Terrier": "terrier/toy",
+  "Treeing Walker Coonhound": "coonhound/walker",
+  "Vizsla": "vizsla",
+  "Weimaraner": "weimaraner",
+  "Welsh Springer Spaniel": "spaniel/welsh",
+  "Welsh Terrier": "terrier/welsh",
+  "West Highland White Terrier": "terrier/westhighland",
+  "Whippet": "whippet",
+  "Wire Fox Terrier": "terrier/wire",
+  "Wirehaired Pointing Griffon": "griffon/wirehaired",
+  "Wirehaired Vizsla": "vizsla/wirehaired",
+  "Xoloitzcuintli": "mexicanhairless",
+  "Yorkshire Terrier": "terrier/yorkshire"
+};
+
+// Create a dataset of 200 dog breeds with proper image URLs
+const dogData = Object.keys(breedPathMap).slice(0, 200).map((breed, index) => {
+  const breedPath = getBreedPath(breed);
+  return {
+    id: index + 1,
+    breed: breed,
+    imageUrl: `https://dog.ceo/api/breed/${breedPath}/images/random`
+  };
+});
 
 // More dog breeds for options
-const additionalBreeds = [
-  "Chihuahua", "Boxer", "Great Dane", "Dachshund", "Doberman",
-  "Rottweiler", "Shih Tzu", "Corgi", "Pomeranian", "Australian Shepherd",
-  "Greyhound", "Bichon Frise", "Akita", "Chow Chow", "Basset Hound",
-  "Maltese", "St. Bernard", "Cocker Spaniel", "Bernese Mountain Dog", "Jack Russell Terrier"
-];
+// Use the rest of the breeds as additional options
+const additionalBreeds = Object.keys(breedPathMap).map(breed => breed);
 
 const MainFeature = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -118,8 +260,8 @@ const MainFeature = () => {
     const newQuestions = selectedDogs.map(dog => {
       // Get 3 random incorrect options
       const incorrectOptions = [...additionalBreeds, ...dogData.filter(d => d.id !== dog.id).map(d => d.breed)]
-        .filter(breed => breed !== dog.breed)
-        .sort(() => Math.random() - 0.5)
+        .filter(breed => breed !== dog.breed) // Remove correct answer
+        .sort(() => Math.random() - 0.5) // Shuffle options
         .slice(0, 3);
       
       // All options (correct + incorrect)
@@ -367,7 +509,7 @@ const MainFeature = () => {
           <div className="py-2">
             {/* Image Container */}
             <div className="relative w-full h-64 sm:h-80 md:h-96 mb-6 rounded-xl overflow-hidden bg-surface-100 dark:bg-surface-800 flex items-center justify-center shadow-card">
-              {!imageLoaded && !imageError && (
+              {(!imageLoaded && !imageError) && (
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>

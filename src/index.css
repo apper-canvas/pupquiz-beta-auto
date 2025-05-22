@@ -79,4 +79,9 @@
   .img-cover {
     @apply object-cover;
   }
+  
+  /* Additional image display utilities */
+  .img-fade-in {
+    @apply transition-opacity duration-300 ease-in-out;
+  }
 }

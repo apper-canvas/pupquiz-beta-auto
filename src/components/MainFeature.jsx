@@ -404,10 +404,10 @@ const MainFeature = () => {
           }
         } catch (innerError) {
           console.error("Error fetching breed-specific image:", innerError.message);
-          throw innerError; // Let outer catch handle fallback
+          throw innerError; // Let outer catch handle the fallback
         }
       } catch (error) {
-        console.error("Error fetching dog image:", error);
+        console.error("Error fetching dog image:", error.message || error);
         setImageError(true);
         toast.error("Failed to load dog image. Please try again.");
       }

@@ -99,4 +99,11 @@
     @apply transition-all duration-300 ease-in-out;
     opacity: 1;
   }
+  
+  /* Breed fact styling */
+  .breed-fact {
+    @apply bg-primary/10 text-primary-dark dark:bg-primary/20 dark:text-primary-light;
+    @apply border border-primary/20 rounded-lg p-4 my-3;
+    @apply transition-all duration-300 ease-in-out;
+  }
 }

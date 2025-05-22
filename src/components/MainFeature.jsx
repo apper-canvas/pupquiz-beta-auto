@@ -235,6 +235,118 @@ const dogData = Object.keys(breedPathMap).slice(0, 200).map((breed, index) => {
 // Use the rest of the breeds as additional options
 const additionalBreeds = Object.keys(breedPathMap).map(breed => breed);
 
+// Database of dog breed facts
+const breedFacts = {
+  "Affenpinscher": [
+    "Affenpinschers are often called 'monkey dogs' due to their monkey-like expressions.",
+    "Despite their small size, Affenpinschers were originally bred to hunt rats.",
+    "The Affenpinscher is one of the oldest toy breeds, dating back to the 17th century."
+  ],
+  "Afghan Hound": [
+    "Afghan Hounds are one of the oldest dog breeds, dating back thousands of years.",
+    "Their long, silky coat served as protection in the mountainous regions of Afghanistan.",
+    "Despite their elegant appearance, Afghan Hounds were bred for hunting large game."
+  ],
+  "African Hunting Dog": [
+    "African Hunting Dogs have a bite force quotient of 142, one of the strongest among canids.",
+    "They are highly social pack animals with a unique hierarchical structure.",
+    "They have a hunting success rate of up to 80%, making them Africa's most efficient predators."
+  ],
+  "Airedale Terrier": [
+    "Airedale Terriers are the largest of all terrier breeds.",
+    "They were used as messenger dogs during World War I due to their intelligence and bravery.",
+    "The breed was developed in Yorkshire, England to hunt otters in the River Aire."
+  ],
+  "Akbash Dog": [
+    "Akbash Dogs are ancient Turkish livestock guardian dogs with a history spanning 3,000 years.",
+    "Their white coat helps shepherds distinguish them from predators in low light.",
+    "They're known for their independence and ability to make decisions without human direction."
+  ],
+  "Akita": [
+    "Akitas were historically used for hunting bear, boar, and deer in Japan.",
+    "The famous Akita named Hachikō waited for his deceased owner at a train station for nine years.",
+    "They were declared a national monument in Japan in 1931."
+  ],
+  "Alapaha Blue Blood Bulldog": [
+    "This rare breed was developed in southern Georgia to protect property and livestock.",
+    "They were nearly extinct in the 1970s but were saved by dedicated breeders.",
+    "The name 'Blue Blood' refers to their nobility, not their coloration."
+  ],
+  "Alaskan Husky": [
+    "Alaskan Huskies are not a recognized breed but a type developed for sled racing.",
+    "They can maintain an average speed of 10-15 mph for hundreds of miles.",
+    "They have been known to run over 100 miles in a single day while pulling a sled."
+  ],
+  "Alaskan Malamute": [
+    "Malamutes are one of the oldest Arctic sled dogs, bred by the Mahlemut tribe of Alaska.",
+    "They can pull sleds weighing up to 1,000 pounds.",
+    "Unlike Siberian Huskies, Malamutes were bred for power, not speed."
+  ],
+  "American Bulldog": [
+    "American Bulldogs were used as working farm dogs in the American South.",
+    "They nearly went extinct after World War II but were revived by a few dedicated breeders.",
+    "They can jump over 6 feet high from a standing position."
+  ],
+  "American Bully": [
+    "The American Bully was developed in the 1990s from American Pit Bull Terriers and other bulldog breeds.",
+    "Despite their muscular appearance, they're known for their gentle and friendly temperament.",
+    "They come in four size varieties: Pocket, Standard, Classic, and XL."
+  ],
+  "American Eskimo Dog": [
+    "Despite their name, American Eskimo Dogs originated in Germany, not among Eskimo people.",
+    "They were popular performers in American traveling circuses in the 19th century.",
+    "Their thick white coat provides insulation in temperatures as low as -20°F."
+  ],
+  "American Foxhound": [
+    "George Washington was instrumental in developing the American Foxhound breed.",
+    "They have been known to run for hours at speeds of up to 30 mph.",
+    "The American Foxhound is the state dog of Virginia."
+  ],
+  "American Pit Bull Terrier": [
+    "American Pit Bull Terriers excel in weight-pulling competitions, sometimes pulling over 5,000 pounds.",
+    "During WWI, they were used as the nation's mascot to represent American courage.",
+    "They have one of the strongest bite forces among domestic dogs."
+  ],
+  "American Staffordshire Terrier": [
+    "The famous RCA Victor dog, Nipper, was believed to be an American Staffordshire Terrier.",
+    "They were originally bred for the now-illegal sports of bull-baiting and bear-baiting.",
+    "Despite their powerful build, they're known as 'nanny dogs' for their gentleness with children."
+  ],
+  "American Water Spaniel": [
+    "The American Water Spaniel was developed in Wisconsin for hunting in the Great Lakes region.",
+    "They're one of the few breeds developed entirely in the United States.",
+    "They're the state dog of Wisconsin, where they were developed in the mid-1800s."
+  ],
+  "Anatolian Shepherd Dog": [
+    "Anatolian Shepherds have been guarding livestock in Turkey for over 6,000 years.",
+    "They can survive in extreme temperatures from -40°F to 120°F.",
+    "Their collar, called a 'kangal,' is spiked to protect them from wolf attacks."
+  ],
+  "Appenzeller Sennenhund": [
+    "This Swiss mountain dog was traditionally used to herd cattle and pull carts.",
+    "They're known for their distinctive tri-colored coat and curved tail.",
+    "They're excellent at musical canine freestyle due to their agility and intelligence."
+  ],
+  "Australian Cattle Dog": [
+    "Australian Cattle Dogs were developed by crossing Dingoes with Collies and other herding dogs.",
+    "The oldest dog ever recorded was an Australian Cattle Dog named Bluey, who lived to 29 years.",
+    "They're born white and develop their blue or red coat as they mature."
+  ]
+};
+
+// Fill in facts for remaining breeds
+Object.keys(breedPathMap).forEach(breed => {
+  if (!breedFacts[breed]) {
+    breedFacts[breed] = [
+      `The ${breed} is known for its distinctive appearance and temperament.`,
+      `${breed}s are highly intelligent and trainable dogs.`,
+      `${breed}s make loyal and devoted companions.`,
+      `The ${breed} has a rich history as a working dog.`,
+      `${breed}s have unique characteristics that set them apart from other breeds.`
+    ];
+  }
+});
+
 const MainFeature = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
@@ -247,6 +359,7 @@ const MainFeature = () => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [currentImageUrl, setCurrentImageUrl] = useState('');
+  const [currentBreedFact, setCurrentBreedFact] = useState('');
   const [retryCount, setRetryCount] = useState(0);
 
   // Prepare quiz questions
@@ -323,12 +436,18 @@ const MainFeature = () => {
     
     setSelectedAnswer(answer);
     setShowFeedback(true);
+
+    // Get a random fact about the breed
+    const breedFactsArray = breedFacts[currentQuestion.breed] || [];
+    const randomFact = breedFactsArray[Math.floor(Math.random() * breedFactsArray.length)];
+    setCurrentBreedFact(randomFact || `The ${currentQuestion.breed} is a fascinating dog breed with unique characteristics.`);
     
     if (isCorrect) {
       setScore(prev => prev + 1);
       toast.success("Correct answer!");
     } else {
       toast.error("Incorrect answer!");
+      toast.info(`The correct answer is: ${currentQuestion.breed}`);
     }
     
     // Move to next question after 2 seconds
@@ -338,6 +457,7 @@ const MainFeature = () => {
       setImageLoaded(false);
       setCurrentImageUrl('');
       setImageError(false);
+      setCurrentBreedFact('');
       
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1);
@@ -346,7 +466,7 @@ const MainFeature = () => {
         toast.info("Quiz completed!");
       }
     }, 2000);
-  };
+  };  
 
   // Format time as MM:SS
   const formatTime = (seconds) => {
@@ -628,6 +748,20 @@ const MainFeature = () => {
                   <p className="font-medium">Not quite. This is actually a {currentQuestion.breed}.</p>
                 )}
               </motion.div>
+              {currentBreedFact && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="p-4 rounded-lg text-center mb-4 bg-primary/10 text-primary-dark dark:bg-primary/20 dark:text-primary-light border border-primary/20"
+                >
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <ApperIcon name="Info" className="h-5 w-5" />
+                    <p className="font-medium text-sm">Breed Fact</p>
+                  </div>
+                  <p>{currentBreedFact}</p>
+                </motion.div>
+              )}
             )}
           </div>
         )}
